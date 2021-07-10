@@ -1,11 +1,11 @@
---create block named countries
+--create a block named countries
 with countries 
 AS 
 ( 
---give columns as country and median
+--set columns as country and median
 SELECT country, 
 (
-  --Add two elements from middle then divide by 2 to calculate median(sorted).
+  --Add two elements from the middle then divide by 2 to calculate median(sorted).
  (SELECT MAX(daily_vaccinations) FROM
    (SELECT TOP 50 PERCENT daily_vaccinations FROM country_vaccination_stats WHERE first.country = country ORDER BY daily_vaccinations) AS BottomHalf)
  +
@@ -13,10 +13,10 @@ SELECT country,
    (SELECT TOP 50 PERCENT daily_vaccinations FROM country_vaccination_stats WHERE first.country = country ORDER BY daily_vaccinations DESC) AS TopHalf)
 ) / 2 AS median FROM country_vaccination_stats as first WHERE first.daily_vaccinations IS NULL
   )
---We have median values, now we can update our table
+--We have median values for every country, now we can update our table
 UPDATE country_vaccination_stats
 set daily_vaccinations = countries.median
---Inner join on country name. 
+--Inner join on the country names. 
 FROM country_vaccination_stats INNER JOIN countries 
     ON country_vaccination_stats.country = countries.country
 
